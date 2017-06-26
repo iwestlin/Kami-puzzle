@@ -16,13 +16,13 @@ var colors = [
   '#E0BEC3'
 ]
 
-var board = document.getElementById('board')
-var us = document.getElementById('us')
-var ps = document.getElementById('ps')
-var levels = document.getElementById('levels')
-var selects = document.getElementById('selects')
-var choose = document.getElementById('chooseLevel')
-var win = document.getElementById('win')
+var board = getId('board')
+var us = getId('us')
+var ps = getId('ps')
+var levels = getId('levels')
+var selects = getId('selects')
+var choose = getId('chooseLevel')
+var win = getId('win')
 
 window.onload = function () {
   for (let i = 0; i < levelsData.length; i++) {
@@ -53,7 +53,7 @@ function init (n) {
   for (let i = 0; i < HEIGHT; i++) {
     for (let j = 0; j < WIDTH; j++) {
       let id = i + '-' + j
-      tiles[id] = document.getElementById(id)
+      tiles[id] = getId(id)
     }
   }
 }
@@ -154,36 +154,18 @@ function getGroup (arr, x, y, color) {
   }
   function change (x, y) {
     var id = x + '-' + y
-    // document.getElementById(id).style.backgroundColor = color
     tiles[id].style.backgroundColor = color
-    var shang = (x - 1) + '-' + y
-    if (checked.indexOf(shang) >= 0 && changed.indexOf(shang) < 0) {
-      changed.push(shang)
-      setTimeout(function () {
-        change(x - 1, y)
-      }, delay)
-    }
-    var xia = (x + 1) + '-' + y
-    if (checked.indexOf(xia) >= 0 && changed.indexOf(xia) < 0) {
-      changed.push(xia)
-      setTimeout(function () {
-        change(x + 1, y)
-      }, delay)
-    }
-    var zuo = x + '-' + (y - 1)
-    if (checked.indexOf(zuo) >= 0 && changed.indexOf(zuo) < 0) {
-      changed.push(zuo)
-      setTimeout(function () {
-        change(x, y - 1)
-      }, delay)
-    }
-    var you = x + '-' + (y + 1)
-    if (checked.indexOf(you) >= 0 && changed.indexOf(you) < 0) {
-      changed.push(you)
-      setTimeout(function () {
-        change(x, y + 1)
-      }, delay)
-    }
+
+    var directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+    directions.forEach(arr => {
+      var neighbour = (x + arr[0]) + '-' + (y + arr[1])
+      if (checked.indexOf(neighbour) >= 0 && changed.indexOf(neighbour) < 0) {
+        changed.push(neighbour)
+        setTimeout(function () {
+          change(x + arr[0], y + arr[1])
+        }, delay)
+      }
+    })
   }
 }
 
@@ -211,4 +193,8 @@ function doneWithClick () {
       tiles[i + '-' + j].onclick = ''
     }
   }
+}
+
+function getId (s) {
+  return document.getElementById(s)
 }
